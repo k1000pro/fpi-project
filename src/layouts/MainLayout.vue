@@ -5,7 +5,7 @@
         <q-btn class="lt-md" flat @click="drawer = !drawer" round icon="menu" />
         <q-toolbar-title class="gt-sm col-3 text-weight-bold">
           <q-icon
-            name="img:../../public/icons/logo.png"
+            name="img:/icons/logo.png"
             style="height: 40px; width: 27px"
           />
           Tienda Cellphone
@@ -63,7 +63,7 @@
         <q-list>
           <q-toolbar-title class="text-white q-my-md q-ml-md text-center text-weight-bold">
             <q-icon
-              name="img:../../public/icons/logo.png"
+              name="img:/icons/logo.png"
               style="height: 40px; width: 27px"
             />
             Tienda Cellphone
@@ -142,6 +142,7 @@ export default {
         };
     },
     components: { ModalAnuncio }
+
 };
 </script>
 <style lang="sass">

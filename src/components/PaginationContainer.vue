@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-center col-md-9 col-12">
+    <div class="flex flex-center col-md-9 col-12 content-end">
         <q-pagination
         v-model="current"
         max="5"
