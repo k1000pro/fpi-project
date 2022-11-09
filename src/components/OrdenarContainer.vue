@@ -4,22 +4,37 @@
       <q-input
         dense
         standout="bg-primary text-white"
-        v-model="minPrecio"
+        :v-model="minPrecio"
         label="Precio:"
         placeholder="$"
+        type="number"
       />
       <q-input
         dense
         standout="bg-primary text-white"
-        v-model="maxPrecio"
+        :modelValue="maxPrecio"
+        @input="$emit('update:maxPrecio', $event.target.value)"
         label="Precio maximo:"
         placeholder="$"
+        type="number"
       />
     </div>
     <div class="row col-6 justify-center">
       <q-btn-group>
-        <q-btn color="primary" label="Precio" icon="arrow_downward" />
-        <q-btn color="primary" label="Fecha" />
+        <q-btn
+          @click="$emit('ordenarPorPrecio')"
+          id="precioBtn"
+          color="primary"
+          label="Precio"
+          :icon="iconPrecio"
+        />
+        <q-btn
+          @click="$emit('ordenarPorFecha')"
+          color="primary"
+          label="Fecha"
+          id="fechaBtn"
+          :icon="iconFecha"
+        />
       </q-btn-group>
     </div>
   </div>
@@ -30,7 +45,8 @@
       class="col-6"
       dense
       standout="bg-primary text-black"
-      v-model="ordenarPor"
+      :modelValue="ordenarPor"
+      @input="$emit('update:ordenarPor', $event.target.value)"
       :options="ordenarOptions"
       label="Ordenar por:"
     />
@@ -40,12 +56,12 @@
   <div class="q-pa-sm q-gutter-sm">
     <q-dialog
       v-model="dialog"
-      persistent
       :maximized="maximizedToggle"
+      position="right"
       transition-show="slide-left"
       transition-hide="slide-right"
     >
-      <q-card class="bg-white text-black">
+      <q-card class="bg-white text-black" style="min-width: 300px">
         <q-bar>
           <q-space />
           <q-btn dense flat icon="close" v-close-popup> </q-btn>
@@ -64,20 +80,28 @@
   <!---Aqui termina el modal-->
 </template>
 <script>
-import { ref } from "vue";
+import { refseVModel } from "vue";
 import FiltroContainer from "../components/FiltroContainer.vue";
 
 export default {
-  setup() {
+  props: ["iconPrecio", "iconFecha", "minPrecio", "maxPrecio", "ordenarPor"],
+  emits: [
+    "ordenarPorPrecio",
+    "ordenarPorFecha",
+    "update:minPrecio",
+    "update:maxPrecio",
+    "update:ordenarPor",
+  ],
+  setup(props, { emit }) {
     return {
-      minPrecio: ref(""),
-      maxPrecio: ref(""),
-      ordenarPor: ref(""),
       ordenarOptions: ["Precio", "Fecha"],
       dialog: ref(false),
       maximizedToggle: ref(true),
+      minPrecioHijo: useVModel(props, "minPrecio"),
     };
   },
+
   components: { FiltroContainer },
+  methods: {},
 };
 </script>

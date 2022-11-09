@@ -2,7 +2,7 @@
   <q-toggle v-model="value" color="primary" keep-color label="Nuevo" />
 
   <div class="column">
-    <h6 class="text-dark q-mt-sm q-mb-none">Marca</h6>
+    <h6 class="text-dark q-mt-sm q-mb-none ">Marca</h6>
     <div class="q-pa-md rounded-borders text-caption options-container">
       <q-option-group
         v-model="marca"
@@ -10,6 +10,7 @@
         color="primary"
         right-label
         size="xs"
+        keep-color
       />
       
     </div>
@@ -21,6 +22,7 @@
         color="primary"
         right-label
         size="xs"
+        keep-color
       />
     </div>
     <h6 class="text-dark q-mt-md q-mb-none">Pantalla</h6>
@@ -31,8 +33,10 @@
         color="primary"
         right-label
         size="xs"
+        keep-color
       />
     </div>
+    <q-btn @click="this.limpiarFiltro()" size="12px" flat dense class="q-mt-sm" color="primary">Limpiar filtros</q-btn>
   </div>
 </template>
 <script>
@@ -42,7 +46,7 @@ export default {
   setup() {
     return {
       value: ref(true),
-      marca: ref(""),
+      marca: ref(),
       marcaOptions: [
         {
           label: "Samsung",
@@ -96,7 +100,17 @@ export default {
         },
       ],
     };
+    
+
   },
+  methods:{
+      limpiarFiltro(){
+        this.marca=0
+        this.sistema=0
+        this.pantalla=0
+        
+      }
+    }
 };
 </script>
 <style lang="sass">
