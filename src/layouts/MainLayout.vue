@@ -36,7 +36,7 @@
           </q-item>
           <q-item clickable v-ripple to="/">
             <q-item-section class="text-grey-4 ">
-              <q-icon name="add" size="sm" />
+              <ModalAnuncio></ModalAnuncio>
             </q-item-section>
           </q-item>
           <q-item clickable v-ripple to="/">
@@ -74,8 +74,8 @@
               <q-item-section >Inicio</q-item-section>
             </q-item>
             <q-separator />
-            <q-item clickable v-ripple to="/" class="q-pa-lg text-weight-bold">
-              <q-item-section class="text-grey-4">Nuevo anuncio</q-item-section>
+            <q-item clickable v-ripple to="/" class="text-weight-bold">
+              <q-item-section class="text-grey-4 "> <ModalAnuncio></ModalAnuncio> </q-item-section>
             </q-item>
             <q-separator />
             <q-item clickable v-ripple to="/" class="q-pa-lg text-weight-bold" >
@@ -107,6 +107,7 @@
 </template>
 
 <script>
+import ModalAnuncio from "src/components/ModalAnuncio.vue";
 import { ref } from "vue";
 const menuList = [
   {
@@ -126,21 +127,28 @@ const menuList = [
 ];
 
 export default {
-  setup() {
-    const leftDrawerOpen = ref(false);
+    setup() {
+        const leftDrawerOpen = ref(false);
+        return {
+            leftDrawerOpen,
+            toggleLeftDrawer() {
+                leftDrawerOpen.value = !leftDrawerOpen.value;
+            },
+            productoBuscado: ref(),
+            drawer: ref(false),
+            menuList,
+            text: ref(""),
+            tab: ref("mails"),
+        };
+    },
+    components: { ModalAnuncio }
 
-    return {
-      leftDrawerOpen,
-      productoBuscado: ref(),
-      drawer: ref(false),
-      menuList,
-      text: ref(""),
-      tab: ref("mails"),
-    };
-  },
 };
 </script>
 <style lang="sass">
 .my-menu-link
   color: white
+
 </style>
+
+
