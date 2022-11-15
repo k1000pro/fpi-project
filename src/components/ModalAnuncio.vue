@@ -186,7 +186,6 @@
 
 
 <script>
-import { async } from "@firebase/util";
 import { collection, addDoc } from "firebase/firestore";
 import { getStorage, uploadBytes, ref as ref2 } from "firebase/storage";
 import { useQuasar } from 'quasar'
