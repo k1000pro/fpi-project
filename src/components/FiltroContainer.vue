@@ -133,7 +133,7 @@ export default {
             }
           });
           const pantalla = {
-            label: res.data().pantalla,
+            label: res.data().pantalla+" pulgadas",
             value: res.data().pantalla,
             stock: 1,
           };

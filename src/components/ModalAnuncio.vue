@@ -10,7 +10,7 @@
       </q-item-section>
     </q-item>
 
-    <q-item clickable v-ripple  class="text-weight-bold lt-md"  @click="dialog = true">
+    <q-item clickable v-ripple  class="text-weight-bold lt-md q-pa-lg"  @click="dialog = true">
         <q-item-section class="text-grey-4">Nuevo anuncio</q-item-section>
     </q-item>
     <q-dialog
@@ -20,15 +20,10 @@
       transition-show="slide-up"
       transition-hide="slide-down"
     >
-      <q-card class="bg-white text-primary q-pa-none">
-        <q-bar class="bg-black">
+      <q-card class="bg-white  q-pa-none">
+        <q-bar class="bg-white">
           <q-space />
-          <q-btn dense flat icon="minimize" @click="maximizedToggle = false" :disable="!maximizedToggle">
-            <q-tooltip v-if="maximizedToggle" class="bg-white text-primary">Minimize</q-tooltip>
-          </q-btn>
-          <q-btn dense flat icon="crop_square" @click="maximizedToggle = true" :disable="maximizedToggle">
-            <q-tooltip v-if="!maximizedToggle" class="bg-white text-primary">Maximize</q-tooltip>
-          </q-btn>
+          
           <q-btn dense flat icon="close" v-close-popup>
             <q-tooltip class="bg-white text-primary">Close</q-tooltip>
           </q-btn>
@@ -47,7 +42,7 @@
                 <div class="row justify-star q-mx-xl">
                   <!-- Radio Botton -->
                   <div class="col-8 justify-star">
-                    <span >Estado: </span>
+                    <span ><strong>Estado:</strong> </span>
                     <q-radio v-model="nuevo.estado" val="nuevo" label="Nuevo" />
                     <q-radio v-model="nuevo.estado" val="usado" label="Usado" />
                   </div>
@@ -79,7 +74,7 @@
               </div>
               <div class="col-12 col-sm-5 flex ">
                 <div class="row justify-star q-mx-xl q-mb-md">
-                  <span class="text-subtitle1 col-12">Titulo breve del anuncio</span>
+                  <span class="text-subtitle1 col-12"><strong>Titulo breve del anuncio:</strong></span>
                   <q-input class="col-12"  standout="bg-primary text-white"  v-model="nuevo.titulo"   :dense="dense" lazy-rules
                     filled :rules="[ val => val && val.length > 0 || 'Por favor rellene el campo']"
                     @update:model-value="envioVar" />
@@ -96,7 +91,7 @@
                       @update:model-value="envioVar"
                       :rules="[ val => val && val.length > 8 || 'Por favor rellene el campo']"
                     />
-                    <span class="text-subtitle1 col-12">Descripcion</span>
+                    <span class="text-subtitle1 col-12"><strong>Descripción:</strong></span>
                     <q-input
                         v-model="nuevo.descripcion"
                         filled

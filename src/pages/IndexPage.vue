@@ -9,7 +9,6 @@
         v-model:ordenarPor="ordenarPor"
         @ordenarPorPrecio="ordenarPorPrecio"
         @ordenarPorFecha="ordenarPorFecha"
-
       ></OrdenarContainer>
       <div class="col-2 gt-sm fixed">
         <FiltroContainer></FiltroContainer>
@@ -26,7 +25,13 @@ import CardsContainer from "../components/CardsContainer.vue";
 import FiltroContainer from "../components/FiltroContainer.vue";
 import PaginationContainer from "../components/PaginationContainer.vue";
 import { ref, watch } from "vue";
-import { db, collection, getDocs, storage, storageRef } from "../boot/firebase";
+import { db, collection, getDocs } from "../boot/firebase";
+import {
+  getStorage,
+  ref as ref2,
+  getDownloadURL,
+  listAll,
+} from "firebase/storage";
 
 export default {
   components: {
@@ -68,7 +73,7 @@ export default {
         this.productos.sort((a, b) => a.precio - b.precio);
       }
     },
-        //metodo para ordenar productos por fecha
+    //metodo para ordenar productos por fecha
     ordenarPorFecha() {
       if (this.iconFecha === "arrow_upward") {
         this.iconFecha = "arrow_downward";
@@ -87,17 +92,33 @@ export default {
     //funcion para traer los productos de la base de datos
     async getProducto() {
       try {
+        const storage = getStorage();
         const productoCollection = collection(db, "producto");
         const productoSnapshot = await getDocs(productoCollection);
         productoSnapshot.forEach((res) => {
-          const producto = {
-            id: res.id,
-            precio: res.data().precio,
-            titulo: res.data().titulo,
-            fecha: res.data().fecha,
-          };
-          this.productos.sort((a, b) => a.precio - b.precio);
-          this.productos.push(producto);
+          var urlPrimero;
+          var carpetaPath = ref2(storage, res.id + "/");
+          listAll(carpetaPath).then((resp) => {
+            // All the items under listRef.
+            const imagenPath = ref2(storage, resp.items[0].fullPath);
+            getDownloadURL(imagenPath)
+              .then((url) => {
+                // `url` is the download URL for 'images/stars.jpg'
+                // Or inserted into an <img> element
+                const producto = {
+                  id: res.id,
+                  precio: res.data().precio,
+                  titulo: res.data().titulo,
+                  fecha: res.data().fecha,
+                  url: url,
+                };
+                this.productos.sort((a, b) => a.precio - b.precio);
+                this.productos.push(producto);
+              })
+              .catch((error) => {
+                // Handle any errors
+              });
+          });
         });
       } catch (error) {
         console.log(error);

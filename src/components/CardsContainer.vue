@@ -8,7 +8,7 @@
       @click="irAlProducto(producto.id)"
       :id="producto.id"
     >
-      <img src="../assets/huawei.jpg" />
+      <img :src=producto.url />
       <q-card-section>
         <div class="text-h6">${{ producto.precio }}</div>
         <div class="text-subtitle2 ellipsis-2-lines ">{{ producto.titulo }}</div>
