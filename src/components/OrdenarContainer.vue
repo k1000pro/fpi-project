@@ -4,7 +4,8 @@
       <q-input
         dense
         standout="bg-primary text-white"
-        :v-model="minPrecio"
+        :model-value="minPrecio"
+        @update:model-value="minPrecio"
         label="Precio:"
         placeholder="$"
         type="number"
@@ -12,8 +13,8 @@
       <q-input
         dense
         standout="bg-primary text-white"
-        :modelValue="maxPrecio"
-        @input="$emit('update:maxPrecio', $event.target.value)"
+        :model-value="maxPrecio"
+        @input="$emit('update:model-value', $event.target.value)"
         label="Precio maximo:"
         placeholder="$"
         type="number"
@@ -34,6 +35,7 @@
           label="Fecha"
           id="fechaBtn"
           :icon="iconFecha"
+
         />
       </q-btn-group>
     </div>
@@ -45,10 +47,11 @@
       class="col-6"
       dense
       standout="bg-primary text-black"
-      :modelValue="ordenarPor"
-      @input="$emit('update:ordenarPor', $event.target.value)"
+      :model-value="ordenarPor"
+
       :options="ordenarOptions"
       label="Ordenar por:"
+      id="ordenarPorSelect"
     />
     <q-btn size="sm" icon="filter_alt" color="primary" @click="dialog = true" />
   </div>
@@ -80,7 +83,7 @@
   <!---Aqui termina el modal-->
 </template>
 <script>
-import { refseVModel } from "vue";
+import { ref } from "vue";
 import FiltroContainer from "../components/FiltroContainer.vue";
 
 export default {
@@ -88,16 +91,19 @@ export default {
   emits: [
     "ordenarPorPrecio",
     "ordenarPorFecha",
-    "update:minPrecio",
-    "update:maxPrecio",
-    "update:ordenarPor",
+    "update:model-value",
+
   ],
   setup(props, { emit }) {
+    function devolverValor(e){
+        console.log(e)
+      }
     return {
       ordenarOptions: ["Precio", "Fecha"],
       dialog: ref(false),
       maximizedToggle: ref(true),
-      minPrecioHijo: useVModel(props, "minPrecio"),
+      devolverValor
+
     };
   },
 

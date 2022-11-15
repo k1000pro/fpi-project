@@ -45,7 +45,7 @@ export default {
     });
     return {
       iconFecha: ref(""),
-      iconPrecio: ref("arrow_downward"),
+      iconPrecio: ref("arrow_upward"),
       productos: ref([]),
       minPrecio,
       maxPrecio,
@@ -56,32 +56,35 @@ export default {
     this.getProducto();
   },
   methods: {
+    //metodo para ordenar productos por precio
     ordenarPorPrecio() {
-      if (this.iconPrecio == "arrow_downward") {
-        this.iconPrecio = "arrow_upward";
-        this.iconFecha = "";
-        this.productos.sort((a, b) => a.price - b.price);
-      } else {
+      if (this.iconPrecio === "arrow_upward") {
         this.iconPrecio = "arrow_downward";
         this.iconFecha = "";
-        this.productos.sort((a, b) => b.price - a.price);
+        this.productos.sort((a, b) => b.precio - a.precio);
+      } else {
+        this.iconPrecio = "arrow_upward";
+        this.iconFecha = "";
+        this.productos.sort((a, b) => a.precio - b.precio);
       }
     },
+        //metodo para ordenar productos por fecha
     ordenarPorFecha() {
-      if (this.iconFecha == "arrow_downward") {
-        this.iconFecha = "arrow_upward";
-        this.iconPrecio = "";
-        this.productos.sort(
-          (a, b) => new Date(a.fecha).getTime() - new Date(b.fecha).getTime()
-        );
-      } else {
+      if (this.iconFecha === "arrow_upward") {
         this.iconFecha = "arrow_downward";
         this.iconPrecio = "";
         this.productos.sort(
           (a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime()
         );
+      } else {
+        this.iconFecha = "arrow_upward";
+        this.iconPrecio = "";
+        this.productos.sort(
+          (a, b) => new Date(a.fecha).getTime() - new Date(b.fecha).getTime()
+        );
       }
     },
+    //funcion para traer los productos de la base de datos
     async getProducto() {
       try {
         const productoCollection = collection(db, "producto");
@@ -89,10 +92,11 @@ export default {
         productoSnapshot.forEach((res) => {
           const producto = {
             id: res.id,
-            price: res.data().price,
-            shortDescription: res.data().shortDescription,
+            precio: res.data().precio,
+            titulo: res.data().titulo,
             fecha: res.data().fecha,
           };
+          this.productos.sort((a, b) => a.precio - b.precio);
           this.productos.push(producto);
         });
       } catch (error) {
