@@ -1,3 +1,4 @@
+
 <!-- eslint-disable vue/valid-v-for -->
 <!-- eslint-disable vue/no-parsing-error -->
 <template>
@@ -354,3 +355,4 @@ export default {
     border: 1px #8e79ba solid;
   }
 </style>
+

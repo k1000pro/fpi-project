@@ -2,7 +2,7 @@
     <div class="flex flex-center col-md-9 col-12 content-end">
         <q-pagination
         v-model="current"
-        max="5"
+        max="10"
         direction-links
         flat
         color="grey"
@@ -22,9 +22,9 @@ export default {
   setup () {
     return {
       current: ref(1),
-      productsPerPage: ref(20),
+      productsPerPage: ref(8),
       productsPerPageOptions: [
-        '10', '20', '30', '40'
+        '8', '15', '20', '30'
       ]
     }
   }

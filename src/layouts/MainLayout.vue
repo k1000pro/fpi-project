@@ -3,10 +3,11 @@
     <q-header reveal elevated class="bg-primary text-white">
       <q-toolbar class="justify-between">
         <q-btn class="lt-md" flat @click="drawer = !drawer" round icon="menu" />
-        <q-toolbar-title class="gt-sm col-3 text-weight-bold">
+        <q-toolbar-title class="gt-sm col-3 text-weight-bold title" @click="regresarInicio">
           <q-icon
             name="img:/icons/logo.png"
             style="height: 40px; width: 27px"
+            
           />
           Tienda Cellphone
         </q-toolbar-title>
@@ -34,12 +35,8 @@
           <q-item active clickable v-ripple to="/" exact active-class="my-menu-link">
             <q-item-section >Inicio</q-item-section>
           </q-item>
-          <q-item clickable v-ripple to="/">
-            <q-item-section class="text-grey-4 ">
               <ModalAnuncio></ModalAnuncio>
-            </q-item-section>
-          </q-item>
-          <q-item clickable v-ripple to="/">
+          <q-item clickable v-ripple >
             <q-item-section class="text-grey-4">
               <q-icon name="shopping_cart" size="sm" />
               <q-badge text-color="black  " color="white" floating transparent
@@ -74,9 +71,9 @@
               <q-item-section >Inicio</q-item-section>
             </q-item>
             <q-separator />
-            <q-item clickable v-ripple to="/" class="text-weight-bold">
-              <q-item-section class="text-grey-4 "> <ModalAnuncio></ModalAnuncio> </q-item-section>
-            </q-item>
+
+           <ModalAnuncio></ModalAnuncio> 
+
             <q-separator />
             <q-item clickable v-ripple to="/" class="q-pa-lg text-weight-bold" >
               <q-item-section class="text-grey-4">Carrito</q-item-section>
@@ -128,8 +125,13 @@ const menuList = [
 
 export default {
     setup() {
+      //Funcion para redirigir
+        function regresarInicio(){
+          window.location.hash="/"
+        }
         const leftDrawerOpen = ref(false);
         return {
+          regresarInicio,
             leftDrawerOpen,
             toggleLeftDrawer() {
                 leftDrawerOpen.value = !leftDrawerOpen.value;
@@ -148,7 +150,8 @@ export default {
 <style lang="sass">
 .my-menu-link
   color: white
-
+.title
+  cursor: pointer
 </style>
 
 
