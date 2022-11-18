@@ -43,7 +43,7 @@ import { db, collection, getDocs, storage, storageRef } from "../boot/firebase";
 export default {
   setup() {
     const currentPath = window.location.hash;
-    const id = currentPath.split("/")[2];
+    const id = currentPath.split("/").pop();
     return {
       descripcion: ref(""),
       arrayDetalleTelefono: ref({

@@ -96,7 +96,6 @@ export default {
         const productoCollection = collection(db, "producto");
         const productoSnapshot = await getDocs(productoCollection);
         productoSnapshot.forEach((res) => {
-          var urlPrimero;
           var carpetaPath = ref2(storage, res.id + "/");
           listAll(carpetaPath).then((resp) => {
             // All the items under listRef.

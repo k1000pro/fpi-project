@@ -2,16 +2,16 @@
   <div class="col-2 gt-sm"></div>
   <div class="q-pa-md row q-gutter-md col-xs-12 col-sm-10 justify-around">
     <q-card
-      class="q-ma-lg shadow-7 q-card "
+      class="q-ma-lg shadow-7 q-card"
       v-for="(producto, index) in productos"
       :key="index"
       @click="irAlProducto(producto.id)"
       :id="producto.id"
     >
-      <img :src=producto.url />
+      <img :src="producto.url" />
       <q-card-section>
         <div class="text-h6">${{ producto.precio }}</div>
-        <div class="text-subtitle2 ellipsis-2-lines ">{{ producto.titulo }}</div>
+        <div class="text-subtitle2 ellipsis-2-lines">{{ producto.titulo }}</div>
       </q-card-section>
     </q-card>
   </div>
@@ -39,7 +39,7 @@ export default {
 <style lang="sass" scoped>
 .q-card
   max-height: 345px
-
+  min-height: 345px
   width: 250px
   cursor: pointer
   transition: all 0.3s
