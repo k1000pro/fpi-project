@@ -67,14 +67,31 @@
       color="primary"
       >Limpiar filtros</q-btn
     >
+    <q-btn
+      @click='this.filtrar()'
+      size="12px"
+      dense
+      class="q-mt-sm"
+      label="Filtrar"
+      color="primary"
+    />
+
+
   </div>
 </template>
 <script>
 import { ref,watch } from "vue";
 import { db, collection, getDocs,} from "../boot/firebase";
+import { useCounterStore } from 'stores/dataglobal';
+import { storeToRefs } from 'pinia';
 
 export default {
+  emits: [
+
+  ],
   setup(props) {
+    const store = useCounterStore();
+
     const marca=ref("")
     const sistema=ref("")
     const pantalla=ref("")
@@ -82,6 +99,7 @@ export default {
         console.log(newMarca)
       })
     return {
+      store,
       nuevo: ref(true),
       marcaOptions: ref([]),
       sistemaOptions: ref([]),
@@ -89,7 +107,7 @@ export default {
       marca,
       sistema,
       pantalla
-      
+
     };
   },
   methods: {
@@ -98,7 +116,16 @@ export default {
       this.marca = 0;
       this.sistema = 0;
       this.pantalla = 0;
+      this.store.filtroMarca = ''
+      this.store.filtroSistemas = ''
+      this.store.filtroPantalla = ''
     },
+    filtrar(){
+      this.store.filtroSistemas = this.sistema
+      this.store.filtroMarca = this.marca
+      this.store.filtroPantalla = this.pantalla
+    }
+    ,
     //Construccion del filtro
     async constFiltro() {
       try {

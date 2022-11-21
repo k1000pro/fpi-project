@@ -11,11 +11,14 @@
         @ordenarPorFecha="ordenarPorFecha"
       ></OrdenarContainer>
       <div class="col-2 gt-sm fixed">
-        <FiltroContainer></FiltroContainer>
+        <FiltroContainer
+
+        ></FiltroContainer>
       </div>
       <CardsContainer :productos="productos"></CardsContainer>
       <PaginationContainer></PaginationContainer>
     </div>
+    <!-- <p>{{store.filtroMarca}} {{store.filtroSistemas}} {{store.filtroPantalla}}</p> -->
   </q-page>
 </template>
 
@@ -24,14 +27,16 @@ import OrdenarContainer from "../components/OrdenarContainer.vue";
 import CardsContainer from "../components/CardsContainer.vue";
 import FiltroContainer from "../components/FiltroContainer.vue";
 import PaginationContainer from "../components/PaginationContainer.vue";
-import { ref, watch } from "vue";
+import { ref, watch, computed } from "vue";
 import { db, collection, getDocs } from "../boot/firebase";
+import { useCounterStore } from 'stores/dataglobal';
 import {
   getStorage,
   ref as ref2,
   getDownloadURL,
   listAll,
 } from "firebase/storage";
+
 
 export default {
   components: {
@@ -42,16 +47,90 @@ export default {
   },
 
   setup() {
+    const store = useCounterStore();
     const minPrecio = ref();
     const maxPrecio = ref();
     const ordenarPor = ref("Precio");
+    const productos = ref([])
+
     watch(minPrecio, (newMinPrecio) => {
       console.log(newMinPrecio);
     });
+    function filtrarTodo(){
+      // console.log('Estoy filtrando')
+      if (store.filtroMarca == '' && store.filtroSistemas == '' && store.filtroPantalla == ''){
+        // console.log("No puedo filtrar")
+        productos.value = store.productosTotales
+        return false
+      }
+      if (store.filtroSistemas != '') {
+        // console.log("Ahorita te filtro por sistema")
+
+        productos.value = productos.value.filter((item) => {
+          if (store.filtroSistemas.includes(item.sistema)) {
+            // console.log("entre a la funcion de filtrado")
+            return true
+          }else {
+            return false
+          }
+        }
+        )
+      }
+      if (store.filtroMarca != '') {
+        // console.log("Ahorita te filtro por Marca")
+        productos.value = productos.value.filter((item) => {
+            if (store.filtroMarca.includes(item.marca)) {
+              return true
+            }else {
+              return false
+            }
+          }
+        )
+      }
+
+      if (store.filtroPantalla != '') {
+        // console.log("Ahorita te filtro por pantalla")
+        productos.value = productos.value.filter((item) => {
+            if (store.filtroPantalla.includes(item.pantalla)) {
+              return true
+            }else {
+              return false
+            }
+          }
+        )
+      }
+
+
+    }
+    //tengo que buscar una forma de cambiarlo
+    const hayFiltroSis = computed ( () => {
+      return store.filtroSistemas
+    }
+    )
+    watch (hayFiltroSis, ( nuevo, viejo )=> {
+      filtrarTodo()
+    })
+    const hayFiltroMar = computed ( () => {
+      return store.filtroMarca
+    }
+    )
+    watch (hayFiltroMar, ( nuevo, viejo )=> {
+      filtrarTodo()
+    })
+    const hayFiltroPan = computed ( () => {
+      return store.filtroSistemas
+    }
+    )
+    watch (hayFiltroPan, ( nuevo, viejo )=> {
+      filtrarTodo()
+    })
+
     return {
+      store,
       iconFecha: ref(""),
       iconPrecio: ref("arrow_upward"),
-      productos: ref([]),
+      productos,
+      productosOriginales: ref([]),
       minPrecio,
       maxPrecio,
       ordenarPor,
@@ -89,6 +168,7 @@ export default {
         );
       }
     },
+
     //funcion para traer los productos de la base de datos
     async getProducto() {
       try {
@@ -110,9 +190,13 @@ export default {
                   titulo: res.data().titulo,
                   fecha: res.data().fecha,
                   url: url,
+                  sistema: res.data().sistema,
+                  marca: res.data().marca,
+                  pantalla: res.data().pantalla
                 };
-                this.productos.sort((a, b) => a.precio - b.precio);
-                this.productos.push(producto);
+                this.store.productosTotales.sort((a, b) => a.precio - b.precio);
+                this.store.productosTotales.push(producto);
+                this.productos = this.store.productosTotales
               })
               .catch((error) => {
                 // Handle any errors
