@@ -15,8 +15,8 @@
 
         ></FiltroContainer>
       </div>
-      <CardsContainer :productos="productos"></CardsContainer>
-      <PaginationContainer></PaginationContainer>
+      <CardsContainer :productos="productos" ></CardsContainer>
+      <PaginationContainer :maxPages="maxPages" :actualPage="actualPage" :productsPerPage="productsPerPage"></PaginationContainer>
     </div>
     <!-- <p>{{store.filtroMarca}} {{store.filtroSistemas}} {{store.filtroPantalla}}</p> -->
   </q-page>
@@ -47,7 +47,13 @@ export default {
   },
 
   setup() {
+
     const store = useCounterStore();
+
+    const productsPerPage=ref( '8')
+    const actualPage=ref(1);
+    const maxPages=ref(1);
+
     const minPrecio = ref();
     const maxPrecio = ref();
     const ordenarPor = ref("Precio");
@@ -134,6 +140,9 @@ export default {
       minPrecio,
       maxPrecio,
       ordenarPor,
+      actualPage,
+      maxPages,
+      productsPerPage
     };
   },
   created() {

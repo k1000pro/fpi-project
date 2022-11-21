@@ -80,16 +80,19 @@
   </div>
 </template>
 <script>
+
 import { ref,watch } from "vue";
 import { db, collection, getDocs,} from "../boot/firebase";
 import { useCounterStore } from 'stores/dataglobal';
 import { storeToRefs } from 'pinia';
+
 
 export default {
   emits: [
 
   ],
   setup(props) {
+
     const store = useCounterStore();
 
     const marca=ref("")
@@ -106,7 +109,9 @@ export default {
       pantallaOptions: ref([]),
       marca,
       sistema,
+
       pantalla
+
 
     };
   },
@@ -160,7 +165,7 @@ export default {
             }
           });
           const pantalla = {
-            label: res.data().pantalla+" pulgadas",
+            label: res.data().pantalla + " pulgadas",
             value: res.data().pantalla,
             stock: 1,
           };

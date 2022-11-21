@@ -17,24 +17,25 @@
           @filter="filterFn"
           use-input
           hide-selected
-          color="primary"
+          input-style="color: black;"
+          color="secondary"
           bg-color="white"
-          outlined
+          standout="text-black"
           item-aligned
           dense
           v-model="text"
           :options="options"
           input-class="text-right"
-          class="col-sm-4"
-          popup-content-style="background-color: #fff; color:black; "
+          class="col-xs-10 col-sm-5 col-md-3 input-hover"
+          popup-content-style="background-color: #fff; color:black;"
           name="search"
           placeholder="Buscar"
           hide-dropdown-icon
           transition-show="jump-up"
-        transition-hide="jump-up"
+          transition-hide="jump-up"
         >
           <template v-slot:append>
-            <q-icon name="search" />
+            <q-icon name="search" color="grey-7" />
           </template>
           <template v-slot:option="scope">
             <q-item
@@ -246,7 +247,7 @@ export default {
                   // Handle any errors
                 });
             });
-          });
+          }); 
         } catch (error) {
           console.log(error);
         }
@@ -264,4 +265,5 @@ export default {
   color: white
 .title
   cursor: pointer
+
 </style>
