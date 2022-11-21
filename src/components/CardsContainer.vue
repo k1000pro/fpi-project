@@ -1,6 +1,6 @@
 <template>
   <div class="col-2 gt-sm"></div>
-  <div class="q-pa-md row q-gutter-md col-xs-12 col-sm-10 justify-around">
+  <div class="q-pa-md row q-gutter-md col-12 col-md-10 justify-around">
     <q-card
       class="q-ma-lg shadow-7 q-card"
       v-for="(producto, index) in productos"

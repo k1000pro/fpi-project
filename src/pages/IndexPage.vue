@@ -13,8 +13,8 @@
       <div class="col-2 gt-sm fixed">
         <FiltroContainer></FiltroContainer>
       </div>
-      <CardsContainer :productos="productos"></CardsContainer>
-      <PaginationContainer></PaginationContainer>
+      <CardsContainer :productos="productos" ></CardsContainer>
+      <PaginationContainer :maxPages="maxPages" :actualPage="actualPage" :productsPerPage="productsPerPage"></PaginationContainer>
     </div>
   </q-page>
 </template>
@@ -42,6 +42,9 @@ export default {
   },
 
   setup() {
+    const productsPerPage=ref( '8')
+    const actualPage=ref(1);
+    const maxPages=ref(1);
     const minPrecio = ref();
     const maxPrecio = ref();
     const ordenarPor = ref("Precio");
@@ -55,6 +58,9 @@ export default {
       minPrecio,
       maxPrecio,
       ordenarPor,
+      actualPage,
+      maxPages,
+      productsPerPage
     };
   },
   created() {

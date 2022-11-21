@@ -70,17 +70,17 @@
   </div>
 </template>
 <script>
-import { ref,watch } from "vue";
-import { db, collection, getDocs,} from "../boot/firebase";
+import { ref, watch } from "vue";
+import { db, collection, getDocs } from "../boot/firebase";
 
 export default {
   setup(props) {
-    const marca=ref("")
-    const sistema=ref("")
-    const pantalla=ref("")
-    watch(marca,(newMarca)=>{
-        console.log(newMarca)
-      })
+    const marca = ref("");
+    const sistema = ref("");
+    const pantalla = ref("");
+    watch(marca, (newMarca) => {
+      localStorage.setItem("marca", newMarca);
+    });
     return {
       nuevo: ref(true),
       marcaOptions: ref([]),
@@ -88,8 +88,7 @@ export default {
       pantallaOptions: ref([]),
       marca,
       sistema,
-      pantalla
-      
+      pantalla,
     };
   },
   methods: {
@@ -133,7 +132,7 @@ export default {
             }
           });
           const pantalla = {
-            label: res.data().pantalla+" pulgadas",
+            label: res.data().pantalla + " pulgadas",
             value: res.data().pantalla,
             stock: 1,
           };

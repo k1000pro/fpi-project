@@ -2,7 +2,7 @@
   <div class="q-pa-sm flex justify-center">
     <q-responsive
       :ratio="4 / 3"
-      style="width: 475px; max-width: 100%"
+      style="width: 400px; max-width: 100%; height:450px;"
       class="shadow-2 rounded-borders"
     >
       <q-carousel swipeable animated arrows v-model="slide" infinite  control-color="primary" thumbnails>
@@ -11,7 +11,6 @@
           :key="index"
           :name="imagen.id"
           :img-src="imagen.imgSrc"
-          class="rounded-borders"
         />
       </q-carousel>
     </q-responsive>

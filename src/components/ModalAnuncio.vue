@@ -20,16 +20,16 @@
       transition-show="slide-up"
       transition-hide="slide-down"
     >
-      <q-card class="bg-white  q-pa-none">
+      <q-card class="bg-white  q-pa-none" >
         <q-bar class="bg-white">
           <q-space />
           
           <q-btn dense flat icon="close" v-close-popup>
-            <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+            <q-tooltip class="bg-white text-primary">Cerrar</q-tooltip>
           </q-btn>
         </q-bar>
         <q-card-section class=" row text-center q-pb-none">
-          <div class="text-h4 col-12">Nuevo Anuncio</div>
+          <div class="text-h4 col-12 text-primary">Nuevo anuncio</div>
         </q-card-section>
         <div class=" q-ma-md ">
             <!-- Inicio -->
@@ -38,19 +38,19 @@
               @reset="onReset"
               class="q-gutter-md row justify-evenly "
             >
-              <div class="col-12 col-sm-5 cuadrado">
-                <div class="row justify-star q-mx-xl">
+              <div class="col-12 col-sm-5 cuadrado shadow-7">
+                <div class="row justify-start q-mx-xl">
                   <!-- Radio Botton -->
-                  <div class="col-8 justify-star">
+                  <div class="col-8 justify-start">
                     <span ><strong>Estado:</strong> </span>
                     <q-radio v-model="nuevo.estado" val="nuevo" label="Nuevo" />
                     <q-radio v-model="nuevo.estado" val="usado" label="Usado" />
                   </div>
                   <!-- Inputs -->
                   <div class="col-12 col-sm-9">
-                    <q-input  standout="bg-primary text-white" prefix="Marca:" v-model="nuevo.marca" label="Marca del Telefono *"  :dense="dense" lazy-rules
+                    <q-input  standout="bg-primary text-white" prefix="Marca:" v-model="nuevo.marca" label="Marca del teléfono *"  :dense="dense" lazy-rules
                     filled :rules="[ val => val && val.length > 0 || 'Por favor rellene el campo']" @update:model-value="envioVar" />
-                    <q-input standout="bg-primary text-white" prefix="Modelo:" v-model="nuevo.modelo" label="Modelo del Telefono *"  :dense="dense" lazy-rules
+                    <q-input standout="bg-primary text-white" prefix="Modelo:" v-model="nuevo.modelo" label="Modelo del teléfono *"  :dense="dense" lazy-rules
                       filled :rules="[ val => val && val.length > 0 || 'Por favor rellene el campo']" @update:model-value="envioVar" />
                     <q-input
                           filled
@@ -64,7 +64,7 @@
                           :rules="[ val => val && val.length > 0 || 'Por favor rellene el campo'] "
                           @update:model-value="envioVar"
                         />
-                      <q-select standout="bg-primary text-white" v-model="arrSistemas" :options="options" prefix="Sistema:" label="Sistema Operativo"  :dense="dense" lazy-rules :rules="[ val => val || 'Por favor rellene el campo']" filled @update:model-value="envioVar" />
+                      <q-select standout="bg-primary text-white" v-model="arrSistemas" :options="options" prefix="Sistema:" label="Sistema operativo"  :dense="dense" lazy-rules :rules="[ val => val || 'Por favor rellene el campo']" filled @update:model-value="envioVar" />
                       <q-input  standout="bg-primary text-white" v-model="nuevo.rom" label="Almacenamiento interno"  :dense="dense" lazy-rules
                         filled :rules="[ val => val && val.length > 0 || 'Por favor rellene el campo']"  mask="###" prefix="ROM:" suffix="GB" @update:model-value="envioVar"/>
                         <q-input  standout="bg-primary text-white" v-model="nuevo.ram" label="Memoria RAM"  :dense="dense" lazy-rules
@@ -72,19 +72,20 @@
                   </div>
                 </div>
               </div>
-              <div class="col-12 col-sm-5 flex ">
-                <div class="row justify-star q-mx-xl q-mb-md">
-                  <span class="text-subtitle1 col-12"><strong>Titulo breve del anuncio:</strong></span>
+              <div class="col-12 col-sm-5 flex cuadrado shadow-7">
+                <div class="row justify-start q-mx-xl q-mb-md ">
+                  <span class="text-subtitle1 col-12"><strong>Título breve del anuncio:</strong></span>
                   <q-input class="col-12"  standout="bg-primary text-white"  v-model="nuevo.titulo"   :dense="dense" lazy-rules
                     filled :rules="[ val => val && val.length > 0 || 'Por favor rellene el campo']"
                     @update:model-value="envioVar" />
-                    <q-input  standout="bg-primary text-white" prefix="Vendedor:" v-model="nuevo.vendedor" label="Vendedor del telefono"  :dense="dense" lazy-rules
+                    <q-input class="col-12" standout="bg-primary text-white" prefix="Vendedor:" v-model="nuevo.vendedor" label="Vendedor del teléfono"  :dense="dense" lazy-rules
                     filled :rules="[ val => val && val.length > 0 || 'Por favor rellene el campo']"
                     @update:model-value="envioVar"/>
                     <q-input
+                    class="col-12"
                       filled
                       v-model="nuevo.telefono"
-                      label="Numero telefonico"
+                      label="Número telefónico"
                       mask=" ####-####"
                       standout="bg-primary text-white"
                       lazy-rules
@@ -100,25 +101,25 @@
                         lazy-rules
                         :rules="[ val => val && val.length > 0 || 'Por favor rellene el campo']"
                         color="primary"
-                        label="Descripcion del Producto"
+                        label="Descripción del producto"
                         autogrow
                         @update:model-value="envioVar"
                       />
                 </div>
               </div>
               <!-- Subir cosas -->
-              <div class="col-12 col-sm-6 cuadrado">
+              <div class="col-12 col-sm-6">
                 <div class="row flex justify-center">
                   <div class="q-pa-md col-8 ">
                     <q-file
                       v-model="fotos"
-                      label="Selecciones las fotos"
+                      label="Seleccione las fotos"
                       filled
                       multiple
                       style="max-width: 400px"
                       accept=".jpg, image/*"
                       lazy-rules
-                      :rules="[ val => val && val.length > 0 || 'Seleccione las imagenes']"
+                      :rules="[ val => val && val.length > 0 || 'Debe subir al menos una foto']"
                       @update:model-value="envioVar ,obternerURL"
                     />
                   </div>
@@ -127,24 +128,25 @@
 
                 <div class="q-pa-md flex justify-center">
                   <q-carousel
+                    control-color="primary"
                     animated
                     v-model="slide"
                     arrows
                     navigation
                     infinite
-                    style="max-height: 200px; max-width: 300px; min-width: 300px; min-height: 200px;"
+                    style="max-height: 250px; max-width: 200px; min-width: 200px; min-height: 250px;"
                     v-if="fotosURL.length>0"
                   >
                     <q-carousel-slide v-for="(img, id) in fotosURL" :key="id"  :name="id+1"  :img-src="img" />
                   </q-carousel>
                 </div>
                 <div class="row q-mb-md flex justify-center">
-                  <q-btn icon="delete" label="Eliminar fotos" color="primary" @click="limpiarFotos" v-if="fotosURL.length>0" />
+                  <q-btn icon="delete" label="Eliminar fotos" color="primary" flat @click="limpiarFotos" v-if="fotosURL.length>0" />
                 </div>
 
               </div>
               <!-- Fin Subir cosas -->
-              <div class="flex justify-center col-12 col-sm-4 ">
+              <div class="flex justify-center col-12 col-sm-5 ">
 
                   <div class="row q-mx-md ">
                     <div class=" col-12 ">
@@ -347,6 +349,7 @@ export default {
 <style>
   .cuadrado{
     border: 1px #8e79ba solid;
+    border-radius: 10px;
   }
 </style>
 
