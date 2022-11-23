@@ -1,5 +1,5 @@
 <template>
-  <q-toggle v-model="nuevo" color="primary" keep-color label="Nuevo" />
+  <q-toggle v-model="estado" color="primary" keep-color label="Nuevo" />
 
   <div class="column">
     <h6 class="text-dark q-mt-sm q-mb-none">Marca</h6>
@@ -67,14 +67,7 @@
       color="primary"
       >Limpiar filtros</q-btn
     >
-    <q-btn
-      @click='this.filtrar()'
-      size="12px"
-      dense
-      class="q-mt-sm"
-      label="Filtrar"
-      color="primary"
-    />
+   
 
 
   </div>
@@ -84,53 +77,57 @@
 import { ref,watch } from "vue";
 import { db, collection, getDocs,} from "../boot/firebase";
 import { useCounterStore } from 'stores/dataglobal';
-import { storeToRefs } from 'pinia';
+
 
 
 export default {
-  emits: [
-
-  ],
-  setup(props) {
+  emits: ['filtrarTodo'],
+  setup(props,{emit}) {
 
     const store = useCounterStore();
-
-    const marca=ref("")
-    const sistema=ref("")
-    const pantalla=ref("")
-    watch(marca,(newMarca)=>{
-        console.log(newMarca)
-      })
+    const estado=ref(store.filtroNuevo)
+    const marca=ref(store.filtroMarcas)
+    const sistema=ref(store.filtroSistemas)
+    const pantalla=ref(store.filtroPantallas)
+    watch (marca,(newMarca, marca )=> {
+      store.filtroMarcas=newMarca
+      emit('filtrarTodo')
+    })
+    watch (sistema,(newSistema, sistema )=> {
+      store.filtroSistemas=newSistema
+      emit('filtrarTodo')
+    })
+    watch (pantalla,(newPantalla, pantalla )=> {
+      store.filtroPantallas=newPantalla
+      emit('filtrarTodo')
+    })
+    watch (estado,(nuevoValor, viejoValor )=> {
+      store.filtroNuevo=nuevoValor
+      emit('filtrarTodo')
+    })
     return {
       store,
-      nuevo: ref(true),
+      estado,
       marcaOptions: ref([]),
       sistemaOptions: ref([]),
       pantallaOptions: ref([]),
       marca,
       sistema,
-
       pantalla
-
-
     };
   },
   methods: {
+    
     //Desmarcar los radio btns
     limpiarFiltro() {
+      this.estado=false;
       this.marca = 0;
       this.sistema = 0;
       this.pantalla = 0;
-      this.store.filtroMarca = ''
+      this.store.filtroMarcas = ''
       this.store.filtroSistemas = ''
-      this.store.filtroPantalla = ''
+      this.store.filtroPantallas = ''
     },
-    filtrar(){
-      this.store.filtroSistemas = this.sistema
-      this.store.filtroMarca = this.marca
-      this.store.filtroPantalla = this.pantalla
-    }
-    ,
     //Construccion del filtro
     async constFiltro() {
       try {
@@ -189,6 +186,7 @@ export default {
           marcaRepetida == false ? this.marcaOptions.push(marca) : NaN;
           sistemaRepetida == false ? this.sistemaOptions.push(sistema) : NaN;
         });
+        
       } catch (error) {
         console.log(error);
       }
@@ -196,7 +194,8 @@ export default {
   },
   created() {
     this.constFiltro();
-  },
+
+  }
 };
 </script>
 <style lang="sass">

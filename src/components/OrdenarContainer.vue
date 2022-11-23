@@ -4,8 +4,7 @@
       <q-input
         dense
         standout="bg-primary text-white"
-        :model-value="minPrecio"
-        @update:model-value="minPrecio"
+        v-model="minPrecio"
         label="Precio:"
         placeholder="$"
         type="number"
@@ -13,8 +12,7 @@
       <q-input
         dense
         standout="bg-primary text-white"
-        :model-value="maxPrecio"
-        @input="$emit('update:model-value', $event.target.value)"
+        v-model="maxPrecio"
         label="Precio maximo:"
         placeholder="$"
         type="number"
@@ -47,8 +45,7 @@
       class="col-6"
       dense
       standout="bg-primary text-black"
-      :model-value="ordenarPor"
-
+      v-model="ordenarPor"
       :options="ordenarOptions"
       label="Ordenar por:"
       id="ordenarPorSelect"
@@ -75,7 +72,7 @@
         </q-card-section>
 
         <q-card-section class="q-pt-none">
-          <FiltroContainer></FiltroContainer>
+          <FiltroContainer  @filtrarTodo="$emit('filtrarTodo')"></FiltroContainer>
         </q-card-section>
       </q-card>
     </q-dialog>
@@ -83,31 +80,52 @@
   <!---Aqui termina el modal-->
 </template>
 <script>
-import { ref } from "vue";
+import { ref,watch } from "vue";
 import FiltroContainer from "../components/FiltroContainer.vue";
+import { useCounterStore } from 'stores/dataglobal';
 
 export default {
-  props: ["iconPrecio", "iconFecha", "minPrecio", "maxPrecio", "ordenarPor"],
+  props: ["iconPrecio", "iconFecha"],
   emits: [
     "ordenarPorPrecio",
     "ordenarPorFecha",
-    "update:model-value",
-
+    "filtrarTodo",
+    "ordenarPor"
   ],
-  setup(props, { emit }) {
-    function devolverValor(e){
-        console.log(e)
-      }
+  setup(props,{ emit } ) {
+    const store = useCounterStore();
+    const minPrecio=ref();
+    const maxPrecio=ref();
+    const ordenarPor=ref("Precio");
+
+    watch (minPrecio,(newMinPrecio, minPrecio )=> {
+      store.minPrecio=newMinPrecio
+      emit('filtrarTodo')
+    })
+    watch (maxPrecio,(newMaxPrecio, maxPrecio )=> {
+      store.maxPrecio=newMaxPrecio
+      emit('filtrarTodo')
+    })
+    watch(ordenarPor,(newOrdenarPor,ordenarPor)=>{
+      store.ordenarPor=newOrdenarPor
+      emit('ordenarPor')
+    })
     return {
       ordenarOptions: ["Precio", "Fecha"],
       dialog: ref(false),
       maximizedToggle: ref(true),
-      devolverValor
+      store,
+      minPrecio,
+      maxPrecio,
+      ordenarPor,
+      
 
     };
   },
 
   components: { FiltroContainer },
-  methods: {},
+  methods: {
+  
+  },
 };
 </script>

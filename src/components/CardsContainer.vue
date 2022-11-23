@@ -17,15 +17,22 @@
   </div>
 </template>
 <script>
-import { ref } from "vue";
+import { useCounterStore } from 'stores/dataglobal';
 
 export default {
+  
   props: ["productos"],
 
+
   setup(props) {
+    const store = useCounterStore();
     //Funcion para redirigir
     function irAlProducto(id) {
       window.location.hash = "Producto/" + id;
+      store.filtroNuevo=false
+      store.filtroMarcas=""
+      store.filtroSistemas=""
+      store.filtroPantallas=""
     }
 
     return {

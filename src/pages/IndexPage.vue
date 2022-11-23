@@ -4,19 +4,16 @@
       <OrdenarContainer
         :iconPrecio="iconPrecio"
         :iconFecha="iconFecha"
-        v-model:minPrecio="minPrecio"
-        v-model:maxPrecio="maxPrecio"
-        v-model:ordenarPor="ordenarPor"
         @ordenarPorPrecio="ordenarPorPrecio"
         @ordenarPorFecha="ordenarPorFecha"
+        @filtrarTodo="filtrarTodo"
+        @ordenarPor="ordenarPor"
       ></OrdenarContainer>
       <div class="col-2 gt-sm fixed">
-        <FiltroContainer
-
-        ></FiltroContainer>
+        <FiltroContainer @filtrarTodo="filtrarTodo"></FiltroContainer>
       </div>
-      <CardsContainer :productos="productos" ></CardsContainer>
-      <PaginationContainer :maxPages="maxPages" :actualPage="actualPage" :productsPerPage="productsPerPage"></PaginationContainer>
+      <CardsContainer :productos="productos"></CardsContainer>
+      <PaginationContainer @paginacion="paginacion"></PaginationContainer>
     </div>
     <!-- <p>{{store.filtroMarca}} {{store.filtroSistemas}} {{store.filtroPantalla}}</p> -->
   </q-page>
@@ -29,14 +26,13 @@ import FiltroContainer from "../components/FiltroContainer.vue";
 import PaginationContainer from "../components/PaginationContainer.vue";
 import { ref, watch, computed } from "vue";
 import { db, collection, getDocs } from "../boot/firebase";
-import { useCounterStore } from 'stores/dataglobal';
+import { useCounterStore } from "stores/dataglobal";
 import {
   getStorage,
   ref as ref2,
   getDownloadURL,
   listAll,
 } from "firebase/storage";
-
 
 export default {
   components: {
@@ -47,108 +43,156 @@ export default {
   },
 
   setup() {
-
     const store = useCounterStore();
+    const productos = ref([]);
 
-    const productsPerPage=ref( '8')
-    const actualPage=ref(1);
-    const maxPages=ref(1);
+    function paginacion() {
+      console.log(store.productosRespaldo.length);
+      productos.value = store.productosRespaldo;
+      if (store.productosRespaldo.length <= store.productsPerPage) {
+        store.maxPages = 1;
+      } else if (store.productosRespaldo.length > store.productsPerPage) {
+        store.maxPages = Math.trunc(
+          store.productosRespaldo.length / store.productsPerPage + 1
+        );
 
-    const minPrecio = ref();
-    const maxPrecio = ref();
-    const ordenarPor = ref("Precio");
-    const productos = ref([])
-
-    watch(minPrecio, (newMinPrecio) => {
-      console.log(newMinPrecio);
-    });
-    function filtrarTodo(){
-      // console.log('Estoy filtrando')
-      if (store.filtroMarca == '' && store.filtroSistemas == '' && store.filtroPantalla == ''){
-        // console.log("No puedo filtrar")
-        productos.value = store.productosTotales
-        return false
+        productos.value = productos.value.slice(
+          store.productsPerPage * (store.actualPage - 1),
+          store.productsPerPage * store.actualPage
+        );
       }
-      if (store.filtroSistemas != '') {
-        // console.log("Ahorita te filtro por sistema")
-
-        productos.value = productos.value.filter((item) => {
-          if (store.filtroSistemas.includes(item.sistema)) {
-            // console.log("entre a la funcion de filtrado")
-            return true
-          }else {
-            return false
-          }
-        }
-        )
-      }
-      if (store.filtroMarca != '') {
-        // console.log("Ahorita te filtro por Marca")
-        productos.value = productos.value.filter((item) => {
-            if (store.filtroMarca.includes(item.marca)) {
-              return true
-            }else {
-              return false
-            }
-          }
-        )
-      }
-
-      if (store.filtroPantalla != '') {
-        // console.log("Ahorita te filtro por pantalla")
-        productos.value = productos.value.filter((item) => {
-            if (store.filtroPantalla.includes(item.pantalla)) {
-              return true
-            }else {
-              return false
-            }
-          }
-        )
-      }
-
-
+      console.log(store.maxPages);
     }
-    //tengo que buscar una forma de cambiarlo
-    const hayFiltroSis = computed ( () => {
-      return store.filtroSistemas
-    }
-    )
-    watch (hayFiltroSis, ( nuevo, viejo )=> {
-      filtrarTodo()
-    })
-    const hayFiltroMar = computed ( () => {
-      return store.filtroMarca
-    }
-    )
-    watch (hayFiltroMar, ( nuevo, viejo )=> {
-      filtrarTodo()
-    })
-    const hayFiltroPan = computed ( () => {
-      return store.filtroSistemas
-    }
-    )
-    watch (hayFiltroPan, ( nuevo, viejo )=> {
-      filtrarTodo()
-    })
-
     return {
       store,
       iconFecha: ref(""),
       iconPrecio: ref("arrow_upward"),
       productos,
-      productosOriginales: ref([]),
-      minPrecio,
-      maxPrecio,
-      ordenarPor,
-      actualPage,
-      maxPages,
-      productsPerPage
+      paginacion,
     };
   },
-  created() {
-    this.getProducto();
-  },
+
   methods: {
+    //filtrar con los radiobutton y por precios
+    filtrarTodo() {
+      this.productos = this.store.productosTotales;
+
+      //FILTRAR PRODUCTOS NUEVOS O USADOS
+      if (this.store.filtroNuevo == true) {
+        var estado = "nuevo";
+        this.productos = this.productos.filter((item) => {
+          if (estado.includes(item.estado)) {
+            return true;
+          } else {
+            return false;
+          }
+        });
+        this.store.productosRespaldo = this.productos;
+        this.paginacion();
+      } else {
+        this.store.productosRespaldo = this.productos;
+        this.paginacion();
+      }
+      if (
+        this.store.filtroMarcas == "" &&
+        this.store.filtroSistemas == "" &&
+        this.store.filtroPantallas == ""
+      ) {
+        //Filtrar por precios
+        if (this.store.minPrecio > 0 && this.store.maxPrecio > 0) {
+          this.productos = this.productos.filter((item) => {
+            if (
+              item.precio * 1 >= this.store.minPrecio &&
+              item.precio * 1 <= this.store.maxPrecio
+            ) {
+              return true;
+            } else {
+              return false;
+            }
+          });
+          this.store.productosRespaldo = this.productos;
+          this.paginacion();
+        }
+      }
+      if (this.store.filtroSistemas != "") {
+        //Filtrar por sistema
+
+        this.productos = this.productos.filter((item) => {
+          if (this.store.filtroSistemas.includes(item.sistema)) {
+            return true;
+          } else {
+            return false;
+          }
+        });
+        //Filtrar por precios
+        if (this.store.minPrecio > 0 && this.store.maxPrecio > 0) {
+          this.productos = this.productos.filter((item) => {
+            if (
+              item.precio * 1 >= this.store.minPrecio &&
+              item.precio * 1 <= this.store.maxPrecio
+            ) {
+              return true;
+            } else {
+              return false;
+            }
+          });
+        }
+        this.store.productosRespaldo = this.productos;
+        this.paginacion();
+      }
+      if (this.store.filtroMarcas != "") {
+        //Filtrar por marca
+
+        this.productos = this.productos.filter((item) => {
+          if (this.store.filtroMarcas.includes(item.marca)) {
+            return true;
+          } else {
+            return false;
+          }
+        });
+        //Filtrar por precios
+
+        if (this.store.minPrecio > 0 && this.store.maxPrecio > 0) {
+          this.productos = this.productos.filter((item) => {
+            if (
+              item.precio * 1 >= this.store.minPrecio &&
+              item.precio * 1 <= this.store.maxPrecio
+            ) {
+              return true;
+            } else {
+              return false;
+            }
+          });
+        }
+        this.store.productosRespaldo = this.productos;
+        this.paginacion();
+      }
+
+      if (this.store.filtroPantallas != "") {
+        // console.log("Ahorita te filtro por pantalla")
+        this.productos = this.productos.filter((item) => {
+          if (this.store.filtroPantallas.includes(item.pantalla)) {
+            return true;
+          } else {
+            return false;
+          }
+        });
+        if (this.store.minPrecio > 0 && this.store.maxPrecio > 0) {
+          this.productos = this.productos.filter((item) => {
+            if (
+              item.precio * 1 >= this.store.minPrecio &&
+              item.precio * 1 <= this.store.maxPrecio
+            ) {
+              return true;
+            } else {
+              return false;
+            }
+          });
+        }
+        this.store.productosRespaldo = this.productos;
+        this.paginacion();
+      }
+    },
     //metodo para ordenar productos por precio
     ordenarPorPrecio() {
       if (this.iconPrecio === "arrow_upward") {
@@ -178,9 +222,21 @@ export default {
       }
     },
 
+    //Filtrar con el combobox solo de moviles
+    ordenarPor() {
+      if (this.store.ordenarPor == "Precio") {
+        this.productos.sort((a, b) => a.precio - b.precio);
+      } else {
+        this.productos.sort(
+          (a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime()
+        );
+      }
+    },
+
     //funcion para traer los productos de la base de datos
     async getProducto() {
       try {
+        this.store.productosTotales = [];
         const storage = getStorage();
         const productoCollection = collection(db, "producto");
         const productoSnapshot = await getDocs(productoCollection);
@@ -201,21 +257,30 @@ export default {
                   url: url,
                   sistema: res.data().sistema,
                   marca: res.data().marca,
-                  pantalla: res.data().pantalla
+                  pantalla: res.data().pantalla,
+                  estado: res.data().estado,
                 };
                 this.store.productosTotales.sort((a, b) => a.precio - b.precio);
                 this.store.productosTotales.push(producto);
-                this.productos = this.store.productosTotales
+                this.store.productosTotales.push(producto);
+                this.store.productosTotales.push(producto);
+                this.productos = this.store.productosTotales;
+                this.store.productosRespaldo = this.store.productosTotales;
               })
               .catch((error) => {
                 // Handle any errors
               });
           });
         });
+
+        //this.paginacion();
       } catch (error) {
         console.log(error);
       }
     },
+  },
+  created() {
+    this.getProducto();
   },
 };
 </script>

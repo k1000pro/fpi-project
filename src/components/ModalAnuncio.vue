@@ -38,7 +38,7 @@
               @reset="onReset"
               class="q-gutter-md row justify-evenly "
             >
-              <div class="col-12 col-sm-5 cuadrado shadow-7">
+              <div class="col-12 col-md-5 cuadrado shadow-7">
                 <div class="row justify-start q-mx-xl">
                   <!-- Radio Botton -->
                   <div class="col-8 justify-start">
@@ -72,7 +72,7 @@
                   </div>
                 </div>
               </div>
-              <div class="col-12 col-sm-5 flex cuadrado shadow-7">
+              <div class="col-12 col-md-5 flex cuadrado shadow-7">
                 <div class="row justify-start q-mx-xl q-mb-md ">
                   <span class="text-subtitle1 col-12"><strong>Título breve del anuncio:</strong></span>
                   <q-input class="col-12"  standout="bg-primary text-white"  v-model="nuevo.titulo"   :dense="dense" lazy-rules
@@ -108,7 +108,7 @@
                 </div>
               </div>
               <!-- Subir cosas -->
-              <div class="col-12 col-sm-6">
+              <div class="col-12 col-md-6 ">
                 <div class="row flex justify-center">
                   <div class="q-pa-md col-8 ">
                     <q-file
@@ -146,7 +146,7 @@
 
               </div>
               <!-- Fin Subir cosas -->
-              <div class="flex justify-center col-12 col-sm-5 ">
+              <div class="flex justify-center col-12 col-md-6 ">
 
                   <div class="row q-mx-md ">
                     <div class=" col-12 ">

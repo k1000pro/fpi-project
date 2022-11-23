@@ -4,9 +4,16 @@ export const useCounterStore = defineStore('dataglobal', {
   state: () => ({
     counter: 0,
     filtroSistemas: '',
-    filtroMarca: '',
-    filtroPantalla:'',
-    productosTotales:[]
+    filtroMarcas: '',
+    filtroPantallas:'',
+    productosTotales:[],
+    maxPrecio:0,
+    minPrecio:0,
+    productsPerPage:8,
+    maxPages:1,
+    actualPage:1,
+    filtroNuevo:false,
+    productosRespaldo:[],
 
   }),
 

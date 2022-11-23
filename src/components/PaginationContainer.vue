@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-center col-md-9 col-12 content-end">
     <q-pagination
-      :model-value="actualPage"
+      v-model="actualPage"
       :max="maxPages"
       direction-links
       flat
@@ -12,21 +12,39 @@
   <div class="col-2 gt-sm">
     <q-select
       standout="bg-primary text-black"
-      :model-value="productsPerPage"
+      v-model="productsPerPage"
       :options="productsPerPageOptions"
       label="Productos por pagina"
     />
   </div>
 </template>
 <script>
-import { ref } from "vue";
+import { ref,watch } from "vue";
+import { useCounterStore } from 'stores/dataglobal';
 
 export default {
-  emits: ["update:model-value"],
-  props: ["maxPages", "actualPage", "productsPerPage"],
-  setup(props) {
+  emits: ["paginacion"],
+  setup(props,{emit}) {
+    const store = useCounterStore();
+    const productsPerPage=ref(8)
+    const maxPages=ref(1)
+    const actualPage=ref(1)
+
+    watch (productsPerPage,(nuevo, viejo )=> {
+      store.productsPerPage=nuevo
+      emit('paginacion')
+      maxPages.value=store.maxPages
+    })
+    watch (actualPage,(nuevo, viejo )=> {
+      store.actualPage=nuevo
+      emit('paginacion')
+      maxPages.value=store.maxPages
+    })
     return {
-      productsPerPageOptions: ["8", "15", "20", "30"],
+      productsPerPageOptions: [8, 15, 20, 30],
+      productsPerPage,
+      maxPages,
+      actualPage
     };
   },
 };
