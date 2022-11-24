@@ -19,32 +19,30 @@
   </div>
 </template>
 <script>
-import { ref,watch } from "vue";
-import { useCounterStore } from 'stores/dataglobal';
+import { ref, watch } from "vue";
+import { useCounterStore } from "stores/dataglobal";
 
 export default {
-  props:["maxPages"],
+  props: ["maxPages"],
   emits: ["paginacion"],
-  setup(props,{emit}) {
+  setup(props, { emit }) {
     const store = useCounterStore();
-    const productsPerPage=ref(8)
-    const actualPage=ref(1)
+    const productsPerPage = ref(15);
+    const actualPage = ref(1);
 
-    watch (productsPerPage,(nuevo, viejo )=> {
-      store.productsPerPage=nuevo
-      emit('paginacion')
-      
-    })
-    watch (actualPage,(nuevo, viejo )=> {
-      store.actualPage=nuevo
-      emit('paginacion')
-    })
+    watch(productsPerPage, (nuevo, viejo) => {
+      store.productsPerPage = nuevo;
+      emit("paginacion");
+    });
+    watch(actualPage, (nuevo, viejo) => {
+      store.actualPage = nuevo;
+      emit("paginacion");
+    });
     return {
       productsPerPageOptions: [8, 15, 20, 30],
       productsPerPage,
-      actualPage
+      actualPage,
     };
   },
-  
 };
 </script>

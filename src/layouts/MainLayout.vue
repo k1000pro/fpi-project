@@ -40,7 +40,7 @@
           <template v-slot:option="scope">
             <q-item
               v-bind="scope.itemProps"
-              style="height: 75px;  max-width: fit-content; min-width: 100%;"
+              style="height: 75px; max-width: fit-content; min-width: 100%"
               @click="irAlProducto(scope.opt.id)"
             >
               <q-item-section avatar="">
@@ -141,8 +141,8 @@
 
     <q-footer bordered class="bg-white text-black">
       <q-toolbar class="column">
-        <div class="text-grey-6">Martinez Molina, Kamilo Ernesto</div>
-        <div class="text-grey-6">Perez Gonzalez, Diego Fernando</div>
+        <div class="text-grey-6">Martinez Molina, Kamilo Ernesto MM19131</div>
+        <div class="text-grey-6">Perez Gonzalez, Diego Fernando PG19012</div>
       </q-toolbar>
     </q-footer>
   </q-layout>
@@ -247,7 +247,7 @@ export default {
                   // Handle any errors
                 });
             });
-          }); 
+          });
         } catch (error) {
           console.log(error);
         }
@@ -265,5 +265,4 @@ export default {
   color: white
 .title
   cursor: pointer
-
 </style>

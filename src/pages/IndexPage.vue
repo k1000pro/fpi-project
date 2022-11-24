@@ -285,8 +285,6 @@ export default {
                   estado: res.data().estado,
                 };
                 this.store.productosTotales.push(producto);
-                this.store.productosTotales.push(producto);
-                this.store.productosTotales.push(producto);
                 this.store.productosTotales.sort((a, b) => a.precio - b.precio);
               })
               .catch((error) => {
