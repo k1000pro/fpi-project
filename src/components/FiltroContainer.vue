@@ -59,7 +59,7 @@
       >
     </div>
     <q-btn
-      @click="this.limpiarFiltro()"
+      @click="limpiarFiltro"
       size="12px"
       flat
       dense
@@ -80,8 +80,9 @@ import { useCounterStore } from 'stores/dataglobal';
 
 
 
+
 export default {
-  emits: ['filtrarTodo'],
+  emits: ['filtrarTodo','paginacion'],
   setup(props,{emit}) {
 
     const store = useCounterStore();
@@ -105,6 +106,17 @@ export default {
       store.filtroNuevo=nuevoValor
       emit('filtrarTodo')
     })
+    //Desmarcar los radio btns
+    function limpiarFiltro() {
+      estado.value=false;
+      marca.value = 0;
+      sistema.value = 0;
+      pantalla.value = 0;
+      store.filtroMarcas = ''
+      store.filtroSistemas = ''
+      store.filtroPantallas = ''
+      emit('paginacion')
+    }
     return {
       store,
       estado,
@@ -113,21 +125,12 @@ export default {
       pantallaOptions: ref([]),
       marca,
       sistema,
-      pantalla
+      pantalla,
+      limpiarFiltro
     };
   },
   methods: {
     
-    //Desmarcar los radio btns
-    limpiarFiltro() {
-      this.estado=false;
-      this.marca = 0;
-      this.sistema = 0;
-      this.pantalla = 0;
-      this.store.filtroMarcas = ''
-      this.store.filtroSistemas = ''
-      this.store.filtroPantallas = ''
-    },
     //Construccion del filtro
     async constFiltro() {
       try {

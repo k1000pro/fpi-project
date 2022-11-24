@@ -10,10 +10,16 @@
         @ordenarPor="ordenarPor"
       ></OrdenarContainer>
       <div class="col-2 gt-sm fixed">
-        <FiltroContainer @filtrarTodo="filtrarTodo"></FiltroContainer>
+        <FiltroContainer
+          @filtrarTodo="filtrarTodo"
+          @paginacion="paginacion"
+        ></FiltroContainer>
       </div>
       <CardsContainer :productos="productos"></CardsContainer>
-      <PaginationContainer @paginacion="paginacion"></PaginationContainer>
+      <PaginationContainer
+        @paginacion="paginacion"
+        :maxPages="maxPages"
+      ></PaginationContainer>
     </div>
     <!-- <p>{{store.filtroMarca}} {{store.filtroSistemas}} {{store.filtroPantalla}}</p> -->
   </q-page>
@@ -24,7 +30,7 @@ import OrdenarContainer from "../components/OrdenarContainer.vue";
 import CardsContainer from "../components/CardsContainer.vue";
 import FiltroContainer from "../components/FiltroContainer.vue";
 import PaginationContainer from "../components/PaginationContainer.vue";
-import { ref, watch, computed } from "vue";
+import { ref, watch, computed, isProxy } from "vue";
 import { db, collection, getDocs } from "../boot/firebase";
 import { useCounterStore } from "stores/dataglobal";
 import {
@@ -45,14 +51,15 @@ export default {
   setup() {
     const store = useCounterStore();
     const productos = ref([]);
+    const maxPages = ref(1);
 
     function paginacion() {
-      console.log(store.productosRespaldo.length);
       productos.value = store.productosRespaldo;
       if (store.productosRespaldo.length <= store.productsPerPage) {
-        store.maxPages = 1;
+        maxPages.value = 1;
+        store.actualPage = 1;
       } else if (store.productosRespaldo.length > store.productsPerPage) {
-        store.maxPages = Math.trunc(
+        maxPages.value = Math.trunc(
           store.productosRespaldo.length / store.productsPerPage + 1
         );
 
@@ -61,36 +68,38 @@ export default {
           store.productsPerPage * store.actualPage
         );
       }
-      console.log(store.maxPages);
     }
+
     return {
       store,
       iconFecha: ref(""),
       iconPrecio: ref("arrow_upward"),
       productos,
       paginacion,
+      maxPages,
     };
   },
 
   methods: {
     //filtrar con los radiobutton y por precios
     filtrarTodo() {
-      this.productos = this.store.productosTotales;
+      this.store.productosRespaldo = this.store.productosTotales;
 
       //FILTRAR PRODUCTOS NUEVOS O USADOS
       if (this.store.filtroNuevo == true) {
         var estado = "nuevo";
-        this.productos = this.productos.filter((item) => {
-          if (estado.includes(item.estado)) {
-            return true;
-          } else {
-            return false;
+        this.store.productosRespaldo = this.store.productosRespaldo.filter(
+          (item) => {
+            if (estado.includes(item.estado)) {
+              return true;
+            } else {
+              return false;
+            }
           }
-        });
-        this.store.productosRespaldo = this.productos;
+        );
+
         this.paginacion();
       } else {
-        this.store.productosRespaldo = this.productos;
         this.paginacion();
       }
       if (
@@ -100,96 +109,110 @@ export default {
       ) {
         //Filtrar por precios
         if (this.store.minPrecio > 0 && this.store.maxPrecio > 0) {
-          this.productos = this.productos.filter((item) => {
-            if (
-              item.precio * 1 >= this.store.minPrecio &&
-              item.precio * 1 <= this.store.maxPrecio
-            ) {
-              return true;
-            } else {
-              return false;
+          this.store.productosRespaldo = this.store.productosRespaldo.filter(
+            (item) => {
+              if (
+                item.precio * 1 >= this.store.minPrecio &&
+                item.precio * 1 <= this.store.maxPrecio
+              ) {
+                return true;
+              } else {
+                return false;
+              }
             }
-          });
-          this.store.productosRespaldo = this.productos;
+          );
+
           this.paginacion();
         }
       }
       if (this.store.filtroSistemas != "") {
         //Filtrar por sistema
 
-        this.productos = this.productos.filter((item) => {
-          if (this.store.filtroSistemas.includes(item.sistema)) {
-            return true;
-          } else {
-            return false;
-          }
-        });
-        //Filtrar por precios
-        if (this.store.minPrecio > 0 && this.store.maxPrecio > 0) {
-          this.productos = this.productos.filter((item) => {
-            if (
-              item.precio * 1 >= this.store.minPrecio &&
-              item.precio * 1 <= this.store.maxPrecio
-            ) {
+        this.store.productosRespaldo = this.store.productosRespaldo.filter(
+          (item) => {
+            if (this.store.filtroSistemas.includes(item.sistema)) {
               return true;
             } else {
               return false;
             }
-          });
+          }
+        );
+        //Filtrar por precios
+        if (this.store.minPrecio > 0 && this.store.maxPrecio > 0) {
+          this.store.productosRespaldo = this.store.productosRespaldo.filter(
+            (item) => {
+              if (
+                item.precio * 1 >= this.store.minPrecio &&
+                item.precio * 1 <= this.store.maxPrecio
+              ) {
+                return true;
+              } else {
+                return false;
+              }
+            }
+          );
         }
-        this.store.productosRespaldo = this.productos;
+
         this.paginacion();
       }
       if (this.store.filtroMarcas != "") {
         //Filtrar por marca
 
-        this.productos = this.productos.filter((item) => {
-          if (this.store.filtroMarcas.includes(item.marca)) {
-            return true;
-          } else {
-            return false;
-          }
-        });
-        //Filtrar por precios
-
-        if (this.store.minPrecio > 0 && this.store.maxPrecio > 0) {
-          this.productos = this.productos.filter((item) => {
-            if (
-              item.precio * 1 >= this.store.minPrecio &&
-              item.precio * 1 <= this.store.maxPrecio
-            ) {
+        this.store.productosRespaldo = this.store.productosRespaldo.filter(
+          (item) => {
+            if (this.store.filtroMarcas.includes(item.marca)) {
               return true;
             } else {
               return false;
             }
-          });
+          }
+        );
+        //Filtrar por precios
+
+        if (this.store.minPrecio > 0 && this.store.maxPrecio > 0) {
+          this.store.productosRespaldo = this.store.productosRespaldo.filter(
+            (item) => {
+              if (
+                item.precio * 1 >= this.store.minPrecio &&
+                item.precio * 1 <= this.store.maxPrecio
+              ) {
+                return true;
+              } else {
+                return false;
+              }
+            }
+          );
         }
-        this.store.productosRespaldo = this.productos;
+
         this.paginacion();
       }
 
       if (this.store.filtroPantallas != "") {
         // console.log("Ahorita te filtro por pantalla")
-        this.productos = this.productos.filter((item) => {
-          if (this.store.filtroPantallas.includes(item.pantalla)) {
-            return true;
-          } else {
-            return false;
-          }
-        });
-        if (this.store.minPrecio > 0 && this.store.maxPrecio > 0) {
-          this.productos = this.productos.filter((item) => {
-            if (
-              item.precio * 1 >= this.store.minPrecio &&
-              item.precio * 1 <= this.store.maxPrecio
-            ) {
+        this.store.productosRespaldo = this.store.productosRespaldo.filter(
+          (item) => {
+            if (this.store.filtroPantallas.includes(item.pantalla)) {
               return true;
             } else {
               return false;
             }
-          });
+          }
+        );
+        if (this.store.minPrecio > 0 && this.store.maxPrecio > 0) {
+          this.store.productosRespaldo = this.store.productosRespaldo.filter(
+            (item) => {
+              if (
+                item.precio * 1 >= this.store.minPrecio &&
+                item.precio * 1 <= this.store.maxPrecio
+              ) {
+                return true;
+              } else {
+                return false;
+              }
+            }
+          );
         }
-        this.store.productosRespaldo = this.productos;
+
         this.paginacion();
       }
     },
@@ -237,6 +260,7 @@ export default {
     async getProducto() {
       try {
         this.store.productosTotales = [];
+        console.log(isProxy(this.productos));
         const storage = getStorage();
         const productoCollection = collection(db, "producto");
         const productoSnapshot = await getDocs(productoCollection);
@@ -260,20 +284,21 @@ export default {
                   pantalla: res.data().pantalla,
                   estado: res.data().estado,
                 };
+                this.store.productosTotales.push(producto);
+                this.store.productosTotales.push(producto);
+                this.store.productosTotales.push(producto);
                 this.store.productosTotales.sort((a, b) => a.precio - b.precio);
-                this.store.productosTotales.push(producto);
-                this.store.productosTotales.push(producto);
-                this.store.productosTotales.push(producto);
-                this.productos = this.store.productosTotales;
-                this.store.productosRespaldo = this.store.productosTotales;
               })
               .catch((error) => {
                 // Handle any errors
               });
           });
         });
-
-        //this.paginacion();
+        this.productos = this.store.productosTotales;
+        this.store.productosRespaldo = this.store.productosTotales;
+        // this.maxPages = Math.trunc(
+        //   this.store.productosRespaldo.length / this.store.productsPerPage + 1
+        // );
       } catch (error) {
         console.log(error);
       }
